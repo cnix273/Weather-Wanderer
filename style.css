@@ -1,0 +1,77 @@
+.header {
+    text-align: center;
+    background-color: #383838;
+    color: white;
+    padding: 5px;
+}
+
+form {
+    padding-left: 15px;
+    padding-right: 0px;
+}
+
+.container {
+    padding-right: 15px;
+}
+
+#search {
+    background-color: lightgray;
+}
+
+#search-header {
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+#search-bar {
+    width: 60%;
+}
+#search-btn {
+    background-color: blue;
+}
+
+.fas {
+    color: white;
+}
+
+.card {
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#search-history {
+    width: 100%;
+}
+
+.card-text {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding-left: 15px;
+    margin-bottom: 0px;
+}
+
+hr {
+    margin: 0px;
+}
+
+.col-sm-7 {
+    padding: 0px;
+    position: relative;
+    width: 75%;
+}
+
+.card-title {
+    padding-top: 20px;
+    padding-left: 15px;
+}
+
+#today {
+    height: 297px;
+    width: 100%;
+}
+
+#forecast {
+    padding-left: 15px;
+}
