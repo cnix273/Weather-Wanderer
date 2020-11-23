@@ -12,10 +12,11 @@ form {
 
 .container {
     padding-right: 15px;
+    height: 100%;
 }
 
 #search {
-    background-color: lightgray;
+    background-color: rgb(248, 248, 248);
 }
 
 #search-header {
@@ -70,8 +71,27 @@ hr {
 #today {
     height: 297px;
     width: 100%;
+    margin-left: 0px !important;
 }
 
 #forecast {
     padding-left: 15px;
+    width: 100%;
+}
+
+.five-day {
+    width: 100%;
+    display: block;
+    background-color: blue;
+    color: white;
+    margin: 10px;
+    margin-top: 0px;
+    padding: 0px;
+}
+
+.date {
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
