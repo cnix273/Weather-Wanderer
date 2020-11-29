@@ -17,7 +17,7 @@ var weather = "";
 var weatherDesc = "";
 
 // Getting the search history element
-
+var searchHistory = $("#search-history");
 
 // API Key
 var apiKey = "0c850848d7da2a07b6d8e02351c5f0c6"
@@ -37,12 +37,21 @@ function weatherToday(city, apiKey) {
         cityTemp.text("Temperature: " + ((response.main.temp).toFixed(2) + "\xB0C"));
         cityHumidity.text("Humidity: " + response.main.humidity + "%");
         cityWind.text("Wind Speed: " + response.wind.speed + " MPH");
-        // cityUV.text("UV Index: " + response)
+
+        cityName.append($("<img>").attr("src", "http://openweathermap.org/img/wn/" + response.weather[0].icon + "@2x.png"));
+
 
         lat = response.coord.lat;
         lon = response.coord.lon;
 
+        // UV index call
         weatherUvIndex(lat, lon, apiKey);
+
+        // Search history
+        var history = $("<p onclick='searchHist(id)'>").text(response.name).attr({"id": response.name, "class": "card-text"});
+
+        searchHistory.append(history, "<hr>");
+
     })
 };
 
@@ -54,21 +63,25 @@ function weatherUvIndex(lat, lon, apiKey) {
         url: queryURL2,
         method: "GET"
     }).then(function(response){
-        
+        // UV Number
         cityUV.text("UV Index: " + response.value);
-        if (response.value < 3) {
+
+        // UV Color
+        var uvNum = parseInt(response.value);
+
+        if (uvNum < 3) {
             cityUV.text("UV Index: " + response.value).attr("style", "background-color: green");
         }
-        if (response.value >= 3 || response.value < 6) {
+        if (uvNum >= 3 && uvNum < 6) {
             cityUV.text("UV Index: " + response.value).attr("style", "background-color: yellow");
         }
-        if (response.value >= 6 || response.value < 8) {
+        if (uvNum >= 6 && uvNum < 8) {
             cityUV.text("UV Index: " + response.value).attr("style", "background-color: orange");
         }
-        if (response.value >= 8 || response.value < 11) {
+        if (uvNum >= 8 && uvNum < 11) {
             cityUV.text("UV Index: " + response.value).attr("style", "background-color: red");
         }
-        if (response.value >= 11) {
+        if (uvNum >= 11) {
             cityUV.text("UV Index: " + response.value).attr("style", "background-color: purple");
         }
     });
@@ -82,55 +95,30 @@ function weatherForecast(city, apiKey) {
         url: queryURL3,
         method: "GET"
     }).then(function(response){
-        console.log(response);
-        
-        // Forecast date
         for (i=5;i<38;i+=8) {
-        var date = $("<h5 class='card-title'>" + response.list[i].dt_txt + "</h5>")
 
-        console.log(response.list[i].dt_txt);
-        var img = $("<img>").attr("src", "http://openweathermap.org/img/wn/" + response.list[i].weather[0].icon + "@2x.png")
-        // var icon = $("<img src='http://openweathermap.org/img/wn/" + response.list[i].weather[0].icon + "@2x.png>");
+            // Forecast date
+            var dateArray = response.list[i].dt_txt.split('-');
+            var newDate = dateArray[1] + "/" + dateArray[2][0] + dateArray[2][1] + "/" + dateArray[0]
+            var date = $("<h5 class='forecast-text' id='forecast-date'>" + newDate + "</h5>")
 
-        // // Forecast icon
-        // if (response.list[i].weather[0].description == "clear sky") {
-        //     var icon = $("<i class='fas fa-sun'></i>")
-        // }
-        // if (response.list[i].weather[0].description == "few clouds") {
-        //     var icon = $("<i class='fas fa-cloud-sun'></i>")
-        // }
-        // if (response.list[i].weather[0].description == "scattered clouds") {
-        //     var icon = $("<i class='fas fa-cloud'></i>")
-        // }
-        // if (response.list[i].weather[0].description == "broken clouds") {
-        //     var icon = $("<i class='fas fa-cloud'></i>")
-        // }
-        // if (response.list[i].weather[0].description == "shower rain") {
-        //     var icon = $("<i class='fas fa-cloud-showers-heavy'></i>")
-        // }
-        // if (response.list[i].weather[0].description == "rain") {
-        //     var icon = $("<i class='fas fa-cloud-rain'></i>")
-        // }
-        // if (response.list[i].weather[0].description == "thunderstorm") {
-        //     var icon = $("<i class='fas fa-bolt'></i>")
-        // }
-        // if (response.list[i].weather[0].description == "snow") {
-        //     var icon = $("<i class='far fa-snowflake'></i>")
-        // }
-        // if (response.list[i].weather[0].description == "mist") {
-        //     var icon = $("<i class='fas fa-smog'></i>")
-        // }
-
-        var temp = $("<p>Temp: " + response.list[i].main.temp + "</p>")
-        var humidity = $("<p>Humidity: " + response.list[i].main.humidity + "%</p>")
-
-        index = (i+3)/8;
-        $("#day" + index).append(date, img, temp, humidity);
+            // Forecast icon
+            var img = $("<img>").attr("src", "http://openweathermap.org/img/wn/" + response.list[i].weather[0].icon + "@2x.png")
         
+            // Forecast temperature
+            var temp = $("<p>Temp: " + response.list[i].main.temp + "</p>").attr("class", "forecast-text")
+
+            // Forecast humidity
+            var humidity = $("<p>Humidity: " + response.list[i].main.humidity + "%</p>").attr("class", "forecast-text")
+            
+            index = (i+3)/8;
+            $("#day" + index).empty();
+            $("#day" + index).append(date, img, temp, humidity);
         };
     })
 };
 
+// Search btn click event
 searchBtn.on("click", function(event) {
     event.preventDefault();
 
@@ -139,3 +127,13 @@ searchBtn.on("click", function(event) {
     weatherToday(city, apiKey);
     weatherForecast(city, apiKey);
 });
+
+// Search history click event
+function searchHist(id) {
+
+    var city = id
+    console.log(city);
+
+    weatherToday(city, apiKey);
+    weatherForecast(city, apiKey);
+};
