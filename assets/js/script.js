@@ -5,7 +5,7 @@ var searchBtn = $("#search-btn");
 //Getting today's forecast element
 var today = $("#today");
 var cityName = $("#name");
-var cityTemp = $("#temp");
+var cityTemp = $("#temperature");
 var cityHumidity = $("#humidity");
 var cityWind = $("#wind");
 var cityUV = $("#uv");
@@ -19,10 +19,25 @@ var weatherDesc = "";
 // Getting the search history element
 var searchHistory = $("#search-history");
 
-// API Key
-var apiKey = "0c850848d7da2a07b6d8e02351c5f0c6"
+// Local Storage of search history
+
+var arrayIndex = parseInt(localStorage.getItem("arrayIndex")) || 0;
+
+searchHistory.empty();
+
+for (currentIndex = 0; currentIndex < arrayIndex; currentIndex++) {
+
+var storedItem = localStorage.getItem(currentIndex);
+
+var displayItem = $("<p onclick='searchHist(id)'>").text(storedItem).attr({"id": storedItem, "class": "card-text"});
+
+searchHistory.append(displayItem, "<hr>");
+};
 
 //AJAX calls
+
+// API Key
+var apiKey = "0c850848d7da2a07b6d8e02351c5f0c6"
 
 // Today's weather
 function weatherToday(city, apiKey) {
@@ -32,14 +47,16 @@ function weatherToday(city, apiKey) {
         url: queryURL,
         method: "GET"
     }).then(function(response){
+        // Get current date
+        var now = moment();
+        var dateDisplay = now.format('MM/DD/YYYY')
         
-        cityName.text(response.name);
-        cityTemp.text("Temperature: " + ((response.main.temp).toFixed(2) + "\xB0C"));
+        cityName.text(response.name + " (" + dateDisplay + ") ");
+        cityTemp.text("Temperature: " + ((response.main.temp).toFixed(2) + " \xB0F"));
         cityHumidity.text("Humidity: " + response.main.humidity + "%");
         cityWind.text("Wind Speed: " + response.wind.speed + " MPH");
 
         cityName.append($("<img>").attr("src", "http://openweathermap.org/img/wn/" + response.weather[0].icon + "@2x.png"));
-
 
         lat = response.coord.lat;
         lon = response.coord.lon;
@@ -48,10 +65,14 @@ function weatherToday(city, apiKey) {
         weatherUvIndex(lat, lon, apiKey);
 
         // Search history
-        var history = $("<p onclick='searchHist(id)'>").text(response.name).attr({"id": response.name, "class": "card-text"});
 
-        searchHistory.append(history, "<hr>");
+        var newItem = $("<p onclick='searchHist(id)'>").text(response.name).attr({"id": response.name, "class": "card-text"});
 
+        searchHistory.append(newItem, "<hr>");
+
+        localStorage.setItem(arrayIndex, response.name);
+        arrayIndex++;
+        localStorage.setItem("arrayIndex", arrayIndex);
     })
 };
 
@@ -95,8 +116,7 @@ function weatherForecast(city, apiKey) {
         url: queryURL3,
         method: "GET"
     }).then(function(response){
-        for (i=5;i<38;i+=8) {
-
+        for (i=2;i<35;i+=8) {
             // Forecast date
             var dateArray = response.list[i].dt_txt.split('-');
             var newDate = dateArray[1] + "/" + dateArray[2][0] + dateArray[2][1] + "/" + dateArray[0]
@@ -106,12 +126,12 @@ function weatherForecast(city, apiKey) {
             var img = $("<img>").attr("src", "http://openweathermap.org/img/wn/" + response.list[i].weather[0].icon + "@2x.png")
         
             // Forecast temperature
-            var temp = $("<p>Temp: " + response.list[i].main.temp + "</p>").attr("class", "forecast-text")
+            var temp = $("<p>Temp: " + response.list[i].main.temp + " \xB0F</p>").attr("class", "forecast-text")
 
             // Forecast humidity
             var humidity = $("<p>Humidity: " + response.list[i].main.humidity + "%</p>").attr("class", "forecast-text")
             
-            index = (i+3)/8;
+            index = (i+6)/8;
             $("#day" + index).empty();
             $("#day" + index).append(date, img, temp, humidity);
         };
@@ -132,8 +152,11 @@ searchBtn.on("click", function(event) {
 function searchHist(id) {
 
     var city = id
-    console.log(city);
 
     weatherToday(city, apiKey);
     weatherForecast(city, apiKey);
+
+    localStorage.setItem(arrayIndex, city);
+    arrayIndex++;
+    localStorage.setItem("arrayIndex", arrayIndex);
 };
