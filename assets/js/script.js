@@ -123,7 +123,7 @@ function weatherForecast(city, apiKey) {
             var date = $("<h5 class='forecast-text' id='forecast-date'>" + newDate + "</h5>")
 
             // Forecast icon
-            var img = $("<img>").attr("src", "https://openweathermap.org/img/wn/" + response.list[i].weather[0].icon + "@2x.png")
+            var img = $("<img>").attr("src", "http://openweathermap.org/img/wn/" + response.list[i].weather[0].icon + "@2x.png")
         
             // Forecast temperature
             var temp = $("<p>Temp: " + response.list[i].main.temp + " \xB0F</p>").attr("class", "forecast-text")
