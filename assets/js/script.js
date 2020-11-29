@@ -56,7 +56,7 @@ function weatherToday(city, apiKey) {
         cityHumidity.text("Humidity: " + response.main.humidity + "%");
         cityWind.text("Wind Speed: " + response.wind.speed + " MPH");
 
-        cityName.append($("<img>").attr("src", "http://openweathermap.org/img/wn/" + response.weather[0].icon + "@2x.png"));
+        cityName.append($("<img>").attr("src", "https://openweathermap.org/img/wn/" + response.weather[0].icon + "@2x.png"));
 
         lat = response.coord.lat;
         lon = response.coord.lon;
@@ -78,7 +78,7 @@ function weatherToday(city, apiKey) {
 
 // UV index
 function weatherUvIndex(lat, lon, apiKey) {
-    var queryURL2 = "http://api.openweathermap.org/data/2.5/uvi?lat=" + lat + "&lon=" + lon + "&appid=" + apiKey;
+    var queryURL2 = "https://api.openweathermap.org/data/2.5/uvi?lat=" + lat + "&lon=" + lon + "&appid=" + apiKey;
 
     $.ajax({
         url: queryURL2,
@@ -110,7 +110,7 @@ function weatherUvIndex(lat, lon, apiKey) {
 
 // 5-day forecast
 function weatherForecast(city, apiKey) {
-    var queryURL3 = "http://api.openweathermap.org/data/2.5/forecast?q=" + city + "&units=imperial&appid=" + apiKey;
+    var queryURL3 = "https://api.openweathermap.org/data/2.5/forecast?q=" + city + "&units=imperial&appid=" + apiKey;
 
     $.ajax({
         url: queryURL3,
@@ -123,7 +123,7 @@ function weatherForecast(city, apiKey) {
             var date = $("<h5 class='forecast-text' id='forecast-date'>" + newDate + "</h5>")
 
             // Forecast icon
-            var img = $("<img>").attr("src", "http://openweathermap.org/img/wn/" + response.list[i].weather[0].icon + "@2x.png")
+            var img = $("<img>").attr("src", "https://openweathermap.org/img/wn/" + response.list[i].weather[0].icon + "@2x.png")
         
             // Forecast temperature
             var temp = $("<p>Temp: " + response.list[i].main.temp + " \xB0F</p>").attr("class", "forecast-text")
